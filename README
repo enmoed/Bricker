@@ -1,0 +1,99 @@
+This project was built for an assignment at The Hebrew University of Jerusalem School of Computer Science
+Some of the files included are part of provided course material for the assignment.
+
+Be sure to import the DanoGameLab.jar External Library.
+
+Ball: This class is derived from the GameObject class. It is responsible for creating ball objects for the
+      game. It does not put the object in the game. We added a getBallCollision function to the API in order
+      to implement certain strategies based on the amount of collisions the game ball incurred.
+
+Brick: This class is derived from the GameObject class. It is responsible for creating brick objects for the
+       game. It does not put the object in the game. I added a second constructor for receiving a
+       BrickStrategy and not only a CollisionStrategy.
+
+FollowCamera: This class is derived from the Camera class. It is responsible for creating a special camera
+              that follows a game object. It does not change the camera in the game but is responsible for
+              reverting the camera back to null.
+
+GraphicLifeCounter: This class is derived from the GameObject class. It is responsible for creating a
+                    specified amount of live objects for the game. It does put the objects in the game. I
+                    added a second constructor implementing situations when we are given a maximum extra lives
+                    parameter. There is a default constant set to 1 in the class for constructors that do not
+                    receive this parameter such as in part 1 one this exercise. Additionally, this class does
+                    not remove the hearts, only changes the render. This allows us to easily increase/decrease
+                    the objects according to the game state.
+
+Heart: This class is derived from the GameObject class. It is responsible for creating heart objects for
+       a game. It does not put the object in the game.
+
+NumericLifeCounter: This class is derived from the GameObject class. It is responsible for creating a numeric
+                    representation of the amount of lives left in the game. It puts the object in the game.
+
+Paddle: This class is derived from the GameObject class. It is responsible for creating paddle objects for a
+        game. It does not put the object in the game.
+
+Puck: This class is derived from the Ball class. It is responsible for creating ball object that has borders.
+      It does not put the object in the game but is responsible for removing them.
+
+TempPaddle: This class is derived from the GameObject class. It is responsible for creating a temporary paddle
+            with a predefined life length. It does not put the object in the game but is responsible for
+            removing them.
+
+AddLocatedObjectStrategy: This class is implements the BrickStrategyDecorator interface. Along with receiving
+                          a strategy this class receives a GameObject initialized with a location and starting
+                          speed, and inserts it into the game when the strategy is invoked.
+
+AddObjectsStrategy: This class is implements the BrickStrategyDecorator interface. Along with receiving
+                    a strategy this class receives an array of GameObjects, initialized with starting
+                    speeds, and inserts them into the game at specified location when the strategy is invoked.
+
+CollisionStrategy: This class is implements the BrickStrategy interface. This strategy class removes an object
+                   from the game when invoked
+
+ChangeCameraStrategy: This class is implements the BrickStrategyDecorator interface. Along with receiving
+                      a strategy this class receives a Camera object and switches the game camera settings to
+                      it when the strategy is invoked.
+
+BrickStrategyFactory: This class acts as a factory for deciding which strategy to assign to each brick. When
+                      called upon, the factory chooses between 6 different strategies. Note that depending on
+                      the lottery, the factory can potentially provide a single brick up to three different
+                      strategies.
+
+BrickStrategy: This interface defines what a brick collision strategy entails. It's functions provide us with
+               abstraction when invoking different game strategies.
+
+BrickStrategyDecorator: This interface defines what a decorator for a brick collision strategy entails. It
+                        does not include functionality but rather provides us with an easier readability
+                        when viewing strategy hierarchy.
+
+Design: I designed the game with a view to maximize abstraction and encapsulation. By attempting to do so, I
+        focused on minimizing the API. This led me to the design pattern of a strategy factory, which
+        receives all the parameters needed to implement any of the strategies. This allowed me to focus on
+        implementing the strategies within the factory, rather than also creating the objects, which is better
+        encapsulation. Additionally, this made for clearer strategy classes, as they received the parameters
+        needed to invoke the class strategy, rather than also having to create game objects.
+        Additionally, by not creating game objects within the strategy classes, I was able to create more
+        general strategies and therefore decrease the number of strategy classes. This was due to some of the
+        strategies, such as the temporary paddle and additional lives, having the same functionality of only
+        needing to add a predefined GameObject into the game. Lastly, I noticed that certain GameObjects, such
+        as TempPaddle and FollowCamera, can be reused amongst different bricks. Therefore, by creating them
+        ahead of time I was able to send the same instances repeatedly to the factory, reducing worst case
+        space complexity.
+
+Implementation issues: The most noticeable implementation issue is to increase the double strategy
+                       implementation. It makes it a tad more difficult to add more layers to the game as you
+                       need to carefully increase the factory. Additionally, we need to be aware that we are
+                       initializing the game objects in a correct order, making sure that certain objects
+                       are created before others.
+
+Question 1+2: The answers is explained in the "Design" section above.
+
+Question 3: As noted previously, I was able to prevent more than 3 strategies by creating specific functions
+            in the strategy factory, for each layer of a double strategy. This allowed me to clearly view the
+            different layers when having more than one strategy per brick, making sure I have implemented
+            the layers correctly.
+
+Question 4: I used a decorator within the strategy design pattern. This allowed me to initialize a base
+            strategy and then send it as a parameter to the special strategy selected in the factory,
+            allowing for double strategies in a simple manner. This design allows for extra layers of
+            strategies as all special strategies are decorators and decorate one another from layer to layer.
